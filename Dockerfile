@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install Web-based terminal (ttyd)
 RUN pip3 install ttyd
+RUN 1
 
 # Create a non-root user
 RUN useradd -m ubuntu
