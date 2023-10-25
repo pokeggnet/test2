@@ -6,12 +6,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     curl \
     wget \
-    ttyd \
+    snapd \
     systemd \
     python3-pip \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
+RUN snap install ttyd --classic
 # Create a non-root user
 RUN useradd -m ubuntu
 
