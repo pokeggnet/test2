@@ -8,13 +8,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     curl \
     build-essential \
-    systemd \
-    systemd-sysv \
     shellinabox \
     && rm -rf /var/lib/apt/lists/*
 
 # Expose Shell In A Box port
 EXPOSE 4200
 
-# Start systemd and Shell In A Box when the container starts
-CMD ["/sbin/init"]
+# Start Shell In A Box when the container starts
+CMD ["shellinabox", "-t"]
