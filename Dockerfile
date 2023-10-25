@@ -3,13 +3,28 @@ FROM ubuntu:20.04
 
 # Install necessary dependencies
 RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
     systemd \
-    systemd-sysv \
+    python3-pip \
+    python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-# Prevent systemd services from starting during build
-RUN systemctl set-default multi-user.target
-RUN systemctl mask dev-hugepages.mount sys-fs-fuse-connections.mount
+# Install Web-based terminal (ttyd)
+RUN pip3 install ttyd
+
+# Create a non-root user
+RUN useradd -m ubuntu
+
+# Allow user to run sudo without password (for development)
+RUN usermod -aG sudo ubuntu
+RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Enable SSH and run ttyd on startup
+RUN systemctl enable ttyd
+
+# Expose SSH and ttyd ports
+EXPOSE 7681
 
 # Start systemd on container startup
 CMD ["/lib/systemd/systemd"]
