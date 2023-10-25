@@ -1,32 +1,20 @@
 # Use a base image with Ubuntu 20.04
 FROM ubuntu:20.04
 
+# Set the DEBIAN_FRONTEND environment variable to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
+
 # Install necessary dependencies
 RUN apt-get update && apt-get install -y \
     curl \
-    wget \
-    snapd \
+    build-essential \
     systemd \
-    python3-pip \
-    python3-venv \
+    systemd-sysv \
+    shellinabox \
     && rm -rf /var/lib/apt/lists/*
 
-RUN service snapd start
-RUN snap install ttyd --classic
-# Create a non-root user
-RUN useradd -m ubuntu
+# Expose Shell In A Box port
+EXPOSE 4200
 
-# Allow user to run sudo without password (for development)
-RUN usermod -aG sudo ubuntu
-RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-# Enable SSH and run ttyd on startup
-RUN systemctl enable ttyd
-
-# Expose SSH and ttyd ports
-EXPOSE 7681
-
-# Start systemd on container startup
-CMD ["/lib/systemd/systemd"]
-CMD ["ttyd", "bash"]
+# Start systemd and Shell In A Box when the container starts
+CMD ["/sbin/init"]
