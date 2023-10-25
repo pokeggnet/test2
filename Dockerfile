@@ -28,3 +28,4 @@ EXPOSE 7681
 
 # Start systemd on container startup
 CMD ["/lib/systemd/systemd"]
+CMD ["ttyd", "bash"]
