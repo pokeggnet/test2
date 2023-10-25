@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-RUN systemctl start snapd.service
+RUN service snapd start
 RUN snap install ttyd --classic
 # Create a non-root user
 RUN useradd -m ubuntu
