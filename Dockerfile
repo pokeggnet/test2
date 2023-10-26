@@ -21,5 +21,5 @@ RUN echo 'root:root' | chpasswd
 EXPOSE 4200
 
 # Start shellinabox
-CMD "/lib/systemd/systemd" && "/usr/bin/shellinaboxd   -t   -s   /:LOGIN"
+CMD ["/lib/systemd/systemd" && "/usr/bin/shellinaboxd", "-t", "-s", "/:LOGIN"]
 
