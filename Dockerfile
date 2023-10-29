@@ -1,27 +1,36 @@
-# Use the systemd-enabled Ubuntu image
-FROM jrei/systemd-ubuntu:20.04
+FROM ubuntu:jammy
 
-# Install necessary packages
-RUN apt-get update && \
-    apt-get install -y shellinabox && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+LABEL maintainer="Robert de Bock <robert@meinit.nl>"
+LABEL build_date="2023-06-13"
 
-# Set the root password (replace 'root_password' with your desired password)
-RUN echo 'root:root_password' | chpasswd
+ENV container docker
+
+# Enable apt repositories.
+RUN sed -i 's/# deb/deb/g' /etc/apt/sources.list
+
+# Enable systemd.
+RUN apt-get update ; \
+    apt-get install -y systemd systemd-sysv shellinabox ; \
+    apt-get clean ; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ; \
+    cd /lib/systemd/system/sysinit.target.wants/ ; \
+    ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1 ; \
+    rm -f /lib/systemd/system/multi-user.target.wants/* ; \
+    rm -f /etc/systemd/system/*.wants/* ; \
+    rm -f /lib/systemd/system/local-fs.target.wants/* ; \
+    rm -f /lib/systemd/system/sockets.target.wants/*udev* ; \
+    rm -f /lib/systemd/system/sockets.target.wants/*initctl* ; \
+    rm -f /lib/systemd/system/basic.target.wants/* ; \
+    rm -f /lib/systemd/system/anaconda.target.wants/* ; \
+    rm -f /lib/systemd/system/plymouth* ; \
+    rm -f /lib/systemd/system/systemd-update-utmp*
 
 # Expose the web-based terminal port
 EXPOSE 4200
 
-# Create a systemd service unit for Shell In A Box
-RUN echo "[Unit]" > /etc/systemd/system/shellinabox.service && \
-    echo "Description=Web-based SSH via Shell In A Box" >> /etc/systemd/system/shellinabox.service && \
-    echo "" >> /etc/systemd/system/shellinabox.service && \
-    echo "[Service]" >> /etc/systemd/system/shellinabox.service && \
-    echo "ExecStart=/usr/bin/shellinaboxd -t -s /:LOGIN" >> /etc/systemd/system/shellinabox.service && \
-    echo "" >> /etc/systemd/system/shellinabox.service && \
-    echo "[Install]" >> /etc/systemd/system/shellinabox.service && \
-    echo "WantedBy=multi-user.target" >> /etc/systemd/system/shellinabox.service
+# Start Shellinabox
+CMD ["/usr/bin/shellinaboxd", "-t", "-s", "/:LOGIN"]
 
-# Start systemd and enable the Shell In A Box service
+VOLUME [ "/sys/fs/cgroup" ]
+
 CMD ["/lib/systemd/systemd"]
