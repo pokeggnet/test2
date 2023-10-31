@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 
 # Install necessary packages
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y systemd shellinabox systemctl && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y systemd shellinabox && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
