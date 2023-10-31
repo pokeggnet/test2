@@ -2,15 +2,16 @@
 FROM ubuntu:20.04
 
 # Install necessary packages and dependencies
-RUN apt-get update 
-RUN apt-get install -y software-properties-common
-RUN add-apt-repository -y ppa:pufferpanel/pufferpanel
-RUN apt-get update
-RUN apt-get install -y pufferpanel
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    apt-get install -y curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Expose the PufferPanel web interface port
+# Install PufferPanel
+RUN curl -sSL https://pufferpanel.com/install.sh | bash
+
+# Expose the PufferPanel web interface port (default is 8080)
 EXPOSE 8080
 
 # Set the startup command for PufferPanel
