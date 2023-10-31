@@ -1,5 +1,5 @@
 # Use a base image that supports systemd (systemd-debian)
-FROM systemd-debian:latest
+FROM jrei/systemd-debian
 
 # Install necessary packages
 RUN apt-get update && \
