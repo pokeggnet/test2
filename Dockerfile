@@ -1,5 +1,5 @@
 # Use a base image that supports systemd (systemd-debian)
-FROM ghcr.io/jumanjihouse/systemd-debian:latest
+FROM systemd-debian:latest
 
 # Install necessary packages
 RUN apt-get update && \
