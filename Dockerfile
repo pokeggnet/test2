@@ -15,7 +15,5 @@ EXPOSE 4200
 
 # Enable services to run under systemd
 RUN systemctl enable shellinabox.service
-RUN /lib/systemd/systemd
-
-# Start systemd
-CMD ["/usr/bin/shellinaboxd --no-beep -t --disable-ssl --service /:LOGIN"]
+RUN /usr/bin/shellinaboxd --no-beep -t --disable-ssl --service 
+CMD ["/lib/systemd/systemd"]
