@@ -1,18 +1,15 @@
-# Use a base image that supports your desired environment (e.g., Ubuntu)
-FROM ubuntu:20.04
+# Use a base image that supports systemd (CentOS)
+FROM centos/systemd
 
-# Install necessary packages and dependencies
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    apt-get install -y curl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Install necessary packages
+RUN yum -y install epel-release && \
+    yum -y install shellinabox && \
+    yum clean all && \
+    rm -rf /var/cache/yum
 
-# Install PufferPanel
-RUN curl -sSL https://pufferpanel.com/install.sh | bash
+# Expose the web-based terminal port (4200 by default)
+EXPOSE 4200
 
-# Expose the PufferPanel web interface port (default is 8080)
-EXPOSE 8080
+# Start Shellinabox directly (bypassing systemctl)
+CMD ["/usr/sbin/shellinaboxd", "-t", "--no-beep", "--disable-ssl", "--service", "/:LOGIN"]
 
-# Set the startup command for PufferPanel
-CMD ["pufferpanel"]
