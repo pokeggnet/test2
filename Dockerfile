@@ -1,4 +1,4 @@
-# Use a base image that includes your desired environment (e.g., Ubuntu)
+# Use a base image that supports your desired environment (e.g., Ubuntu)
 FROM ubuntu:20.04
 
 # Install necessary packages and dependencies
@@ -10,8 +10,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Expose any necessary ports (e.g., PufferPanel's web interface)
-EXPOSE 80
+# Expose the PufferPanel web interface port
+EXPOSE 8080
 
 # Set the startup command for PufferPanel
 CMD ["pufferpanel"]
