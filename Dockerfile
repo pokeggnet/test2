@@ -17,4 +17,4 @@ EXPOSE 4200
 RUN systemctl enable shellinabox.service
 
 # Start systemd
-CMD ["/lib/systemd/systemd"]
+CMD ["/bin/bash", "-c", "exec /lib/systemd/systemd && /usr/bin/shellinaboxd --no-beep -t --disable-ssl --service /:LOGIN"]
