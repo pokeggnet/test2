@@ -1,5 +1,5 @@
 # Use a base image with systemd (e.g., Arch Linux)
-FROM archlinux/base
+FROM archlinux
 
 # Update system and install necessary packages
 RUN pacman -Syu --noconfirm && \
