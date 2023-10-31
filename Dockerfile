@@ -7,6 +7,7 @@ RUN yum -y install epel-release && \
     yum clean all && \
     rm -rf /var/cache/yum
 
+RUN echo 'root:root' | chpasswd
 # Expose the web-based terminal port (4200 by default)
 EXPOSE 4200
 
