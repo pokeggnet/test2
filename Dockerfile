@@ -1,11 +1,11 @@
-# Use a base image with systemd (e.g., CentOS)
-FROM centos/systemd
+# Use a base image with systemd (e.g., Arch Linux)
+FROM archlinux/base
 
-# Install necessary packages
-RUN dnf install -y epel-release && \
-    dnf install -y shellinabox && \
-    dnf clean all && \
-    rm -rf /var/cache/dnf
+# Update system and install necessary packages
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm yay shellinabox && \
+    pacman -Scc --noconfirm && \
+    rm -rf /var/cache/pacman/pkg/*
 
 # Set the root user password to "root"
 RUN echo 'root:root' | chpasswd
@@ -14,4 +14,4 @@ RUN echo 'root:root' | chpasswd
 EXPOSE 4200
 
 # Start Shellinabox directly
-CMD ["/usr/sbin/shellinaboxd", "-t", "--no-beep", "--disable-ssl", "--service", "/:LOGIN"]
+CMD ["/usr/bin/shellinaboxd", "--no-beep", "-t", "--disable-ssl", "--service", "/:LOGIN"]
