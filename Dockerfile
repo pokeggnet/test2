@@ -1,17 +1,15 @@
-# Use a lightweight base image (e.g., Alpine Linux)
-FROM alpine:latest
+# Use a base image that supports systemd, for example, Ubuntu
+FROM ubuntu:20.04
 
-# Create a directory for your web app
-RUN mkdir -p /webapp
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y shellinabox && \
+    apt-get install -y systemd && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN echo 'root:root' | chpasswd
+# Expose the web-based terminal port
+EXPOSE 4200
 
-# Copy your HTML file for the web-based shell to the container
-COPY shell.html /webapp/index.html
-
-# Install a basic web server (BusyBox's httpd)
-RUN apk add --no-cache busybox
-
-# Expose a port (e.g., 8080) for web access
-EXPOSE 8080
-
-# Start the web server to serve the web-based shell
-CMD ["/bin/httpd", "-p", "8080", "-h", "/webapp"]
+# Start shellinabox
+CMD ["/usr/bin/shellinaboxd", "-t", "-s", "/:LOGIN"]
