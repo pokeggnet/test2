@@ -1,32 +1,11 @@
-# Use a suitable base image with systemd
+# Use a suitable base image (e.g., Ubuntu 20.04)
 FROM ubuntu:20.04
 
-# Enable systemd
-ENV container docker
+# Install a minimal shell (e.g., bash)
+RUN apt-get update && apt-get install -y bash && apt-get clean
 
-# Install necessary packages
-RUN apt-get update && apt-get install -y systemd shellinabox && apt-get clean
+# Expose a port (e.g., 8080) for web access
+EXPOSE 8080
 
-# Create a minimal systemd unit for the Docker container
-RUN echo "[Unit]" > /etc/systemd/system/container.service && \
-    echo "Description=Container" >> /etc/systemd/system/container.service && \
-    echo "" >> /etc/systemd/system/container.service && \
-    echo "[Service]" >> /etc/systemd/system/container.service && \
-    echo "ExecStart=/usr/sbin/init" >> /etc/systemd/system/container.service && \
-    echo "Restart=always" >> /etc/systemd/system/container.service && \
-    echo "" >> /etc/systemd/system/container.service && \
-    echo "[Install]" >> /etc/systemd/system/container.service && \
-    echo "WantedBy=multi-user.target" >> /etc/systemd/system/container.service
-
-# Create a startup script
-RUN echo "#!/bin/sh" > /start.sh && \
-    echo "systemctl enable container.service" >> /start.sh && \
-    echo "systemctl start container.service" >> /start.sh && \
-    echo "service shellinabox start" >> /start.sh && \
-    chmod +x /start.sh
-
-# Expose the web-based terminal port
-EXPOSE 4200
-
-# Run the startup script
-CMD ["/start.sh"]
+# Start a basic web server to serve the shell
+CMD ["bash", "-c", "while true; do echo -e 'HTTP/1.1 200 OK\n\n$(bash)'; done | nc -l -p 8080"]
