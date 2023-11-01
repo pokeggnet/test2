@@ -1,9 +1,12 @@
  # Use a base image that supports systemd, for example, Ubuntu
 FROM ubuntu:20.04
 
+# Set environment variables to avoid prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y shellinabox curl gnupg && \
+    apt-get install -y --no-install-recommends shellinabox curl gnupg ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -18,5 +21,9 @@ RUN mkdir -p /var/lib/pufferpanel && \
     curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | bash && \
     apt-get install -y pufferpanel
 
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # Start shellinabox and PufferPanel
 CMD service shellinabox start && pufferpanel run
+
