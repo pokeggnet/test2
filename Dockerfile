@@ -10,13 +10,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Install Crafty Controller
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install crafty-controller -g
-
 # Expose the Crafty Controller port and the Shellinabox port
 EXPOSE 8000 4200
 
 # Start Shellinabox and Crafty Controller when the container starts
-CMD service shellinabox start && crafty start
+CMD service shellinabox start
