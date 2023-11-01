@@ -20,7 +20,7 @@ EXPOSE 4200
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Create a supervisord configuration file
-RUN echo "[supervisord]\nnodaemon=true\n\n[program:shellinabox]\ncommand=service shellinabox start" > /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[supervisord]\nnodaemon=true\n\n[program:shellinabox]\ncommand=/usr/bin/shellinaboxd --no-beep -t" > /etc/supervisor/conf.d/supervisord.conf
 
 # Start supervisord
 CMD ["/usr/bin/supervisord"]
