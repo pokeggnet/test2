@@ -1,32 +1,31 @@
-# Use an official CentOS image as a parent image
-FROM centos:7
+# Use a base image that supports systemd, for example, Ubuntu
+FROM ubuntu:20.04
 
 # Install necessary packages
-RUN yum -y update && \
-    yum -y install systemd shellinabox && \
-    yum clean all
+RUN apt-get update && \
+    apt-get install -y shellinabox systemd && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Remove unnecessary systemd services
-RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
-    rm -f /lib/systemd/system/multi-user.target.wants/*;\
-    rm -f /etc/systemd/system/*.wants/*;\
-    rm -f /lib/systemd/system/local-fs.target.wants/*; \
-    rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
-    rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
-    rm -f /lib/systemd/system/basic.target.wants/*;\
-    rm -f /lib/systemd/system/anaconda.target.wants/*;
+# Remove unnecessary services
+RUN find /etc/systemd/system \
+        /lib/systemd/system \
+        -path '*.wants/*' \
+        -not -name '*journald*' \
+        -not -name '*systemd-tmpfiles*' \
+        -not -name '*systemd-user-sessions*' \
+        -exec rm \{} \;
 
-# Configure Shell In A Box
-RUN sed -i 's/--no-beep/--no-beep --disable-ssl/g' /etc/sysconfig/shellinaboxd
+# Enable systemd
+ENV init /lib/systemd/systemd
+RUN systemctl set-default multi-user.target
+STOPSIGNAL SIGRTMIN+3
+
+# Set root password
 RUN echo 'root:root' | chpasswd
-# Expose the Shell In A Box port
+
+# Expose the web-based terminal port
 EXPOSE 4200
 
-# Create a script that starts systemd and Shell In A Box
-RUN echo '#!/bin/bash' > /start.sh && \
-    echo '/usr/sbin/init &' >> /start.sh && \
-    echo '/usr/bin/shellinaboxd --port 4200 --disable-ssl' >> /start.sh && \
-    chmod +x /start.sh
-
-# Set the default command to run on boot
-CMD ["/start.sh"]
+# Start shellinabox
+CMD ["/usr/bin/shellinaboxd", "-t", "-s", "/:LOGIN"]
