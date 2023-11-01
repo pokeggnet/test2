@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends shellinabox curl gnupg ca-certificates supervisor && \
+    apt-get install -y --no-install-recommends curl gnupg ca-certificates supervisor shellinabox && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -16,17 +16,13 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-get update && \
     apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# Set root password
-RUN echo 'root:root' | chpasswd
+# Install Crafty Controller
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install crafty-controller -g
 
-# Expose the web-based terminal port
-EXPOSE 4200
+# Expose the Crafty Controller port and the Shellinabox port
+EXPOSE 8000 4200
 
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Create a supervisord configuration file
-RUN echo "[supervisord]\nnodaemon=true\n\n[program:shellinabox]\ncommand=/usr/bin/shellinaboxd --no-beep -t" > /etc/supervisor/conf.d/supervisord.conf
-
-# Start supervisord
-CMD ["/usr/bin/supervisord"]
+# Start Shellinabox and Crafty Controller when the container starts
+CMD service shellinabox start && crafty start
