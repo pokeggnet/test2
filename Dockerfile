@@ -18,10 +18,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add wsl.conf
-RUN echo "[interop]\n\
+RUN echo "[boot]\n\
+systemd=true\n\
+[interop]\n\
 enabled=true\n\
 appendWindowsPath=true\n\
-systemd=true\n\
 " >> /etc/wsl.conf
 
 RUN echo 'root:root' | chpasswd
