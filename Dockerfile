@@ -17,6 +17,13 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Add wsl.conf
+RUN echo "[interop]\n\
+enabled=true\n\
+appendWindowsPath=true\n\
+systemd=true\n\
+" >> /etc/wsl.conf
+
 RUN echo 'root:root' | chpasswd
 
 # Expose the web-based terminal port
