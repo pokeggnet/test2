@@ -1,18 +1,19 @@
-FROM docker
+# Use an image that has systemd installed
+FROM centos/systemd
 
 # Install necessary packages
-RUN apt-get update && \
-    apt-get install -y shellinabox systemd curl gnupg2 wsl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN yum -y update && \
+    yum -y install shellinabox systemd curl gnupg2 wsl && \
+    yum clean all && \
+    rm -rf /var/cache/yum
 
 # Install PowerShell
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
     curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/microsoft-prod.list && \
-    apt-get update && \
-    apt-get install -y powershell && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    yum -y update && \
+    yum -y install powershell && \
+    yum clean all && \
+    rm -rf /var/cache/yum
 
 # Add wsl.conf
 RUN echo "[boot]\n\
