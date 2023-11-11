@@ -1,19 +1,15 @@
-FROM ubuntu:22.04
+FROM docker
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y shellinabox && \
-    apt-get install -y systemd && \
-    apt-get install -y curl && \
-    apt-get install -y gnupg2 && \
-    apt-get install -y wsl && \
+    apt-get install -y shellinabox systemd curl gnupg2 wsl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install PowerShell
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/microsoft-prod.list
-RUN apt-get update && \
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/microsoft-prod.list && \
+    apt-get update && \
     apt-get install -y powershell && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
