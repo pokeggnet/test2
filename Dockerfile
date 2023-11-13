@@ -3,22 +3,20 @@ FROM ubuntu:20.04
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y openjdk-9-jdk git maven && \
+    apt-get install -y build-essential git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Clone the Bastillion repository
-RUN git clone https://github.com/bastillion-io/Bastillion.git
+# Clone the TinyShell repository
+RUN git clone https://github.com/creaktive/tsh.git
 
-# Build and install Bastillion
-RUN cd Bastillion && \
-    export JAVA_HOME=/usr/lib/jvm/java-9-openjdk-amd64 && \
-    export M2_HOME=/usr/share/maven && \
-    export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH && \
-    mvn package jetty:run
+# Build and install TinyShell
+RUN cd tsh && make linux
 
-# Expose the Bastillion web interface port
+# Expose the TinyShell web interface port
+# Note: You'll need to replace this with the actual port used by your TinyShell application
 EXPOSE 8080
 
-# Start Bastillion
-CMD ["java", "-jar", "target/bastillion-upgrade-4.00.01.jar"]
+# Start TinyShell
+# Note: You'll need to replace this with the actual command to start your TinyShell application
+CMD ["./tshd"]
