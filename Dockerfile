@@ -3,14 +3,17 @@ FROM ubuntu:20.04
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y ttyd && \
-    apt-get install -y systemd && \
+    apt-get install -y curl build-essential python3 libncurses-dev flex libssl-dev bc bison git && \
+    curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+    apt-get install -y nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN echo 'root:root' | chpasswd
 
-# Expose the ttyd web interface port
+# Install Wetty
+RUN npm install -g wetty
+
+# Expose the Wetty web interface port
 EXPOSE 8080
 
-# Start ttyd
-CMD ["/usr/bin/ttyd", "-p", "8080", "bash"]
+# Start Wetty
+CMD ["wetty", "--port", "8080"]
