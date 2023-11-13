@@ -9,7 +9,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN echo 'root:root' | chpasswd
 # Expose the web-based terminal port
-EXPOSE 4200
+EXPOSE 8080
 
 # Start shellinabox
-CMD ["/usr/bin/shellinaboxd", "-t", "-s", "/:LOGIN"]
+CMD ["/usr/bin/shellinaboxd", "--port=8080", "-t", "-s", "/:LOGIN"]
