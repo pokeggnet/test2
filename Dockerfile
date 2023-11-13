@@ -19,4 +19,4 @@ EXPOSE 8080
 
 # Start TinyShell
 # Note: You'll need to replace this with the actual command to start your TinyShell application
-CMD ["./tshd"]
+CMD ["./tsh localhost:8080"]
