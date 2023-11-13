@@ -3,17 +3,22 @@ FROM ubuntu:20.04
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y curl build-essential python3 libncurses-dev flex libssl-dev bc bison git && \
-    curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-    apt-get install -y nodejs && \
+    apt-get install -y openjdk-9-jdk git maven && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Install Wetty
-RUN npm install -g wetty
+# Clone the Bastillion repository
+RUN git clone https://github.com/bastillion-io/Bastillion.git
 
-# Expose the Wetty web interface port
+# Build and install Bastillion
+RUN cd Bastillion && \
+    export JAVA_HOME=/usr/lib/jvm/java-9-openjdk-amd64 && \
+    export M2_HOME=/usr/share/maven && \
+    export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH && \
+    mvn package jetty:run
+
+# Expose the Bastillion web interface port
 EXPOSE 8080
 
-# Start Wetty
-CMD ["wetty", "--port", "8080"]
+# Start Bastillion
+CMD ["java", "-jar", "target/bastillion-upgrade-4.00.01.jar"]
